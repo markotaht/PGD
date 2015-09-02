@@ -43,3 +43,11 @@ int Room::getHeight(){
 SDL_Point Room::getCenter(){
 	return center;
 }
+
+std::vector<Room*> Room::getConnections(){
+	return connections;
+}
+
+void Room::setConnections(Room* room){
+	connections.push_back(room);
+}

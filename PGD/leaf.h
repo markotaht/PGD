@@ -5,12 +5,12 @@
 #include <stdlib.h>
 #include <time.h>
 #include <SDL.h>
-
+#include <iostream>
 #include "room.h"
 #include "hall.h"
 
 #define MIN_ROOM_SIZE 6
-#define MAX_ROOM_SIZE 20
+#define MAX_ROOM_SIZE 25
 class Leaf{
 private:
 

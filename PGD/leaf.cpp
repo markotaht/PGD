@@ -8,7 +8,6 @@ _height(height)
 {}
 
 bool Leaf::split(){
-	srand(time(NULL));
 	if (leftChild != NULL || rightChild != NULL)
 		return false;
 
@@ -42,6 +41,11 @@ void Leaf::createRoom(){
 			createHall(leftChild->getRandomChildRoom(), rightChild->getRandomChildRoom());
 		}
 	}else{
+	//	int sizeX = (_width);
+	//	int sizeY = (_height );
+
+	//	int posX = (_width - sizeX);
+	//	int posY = (_height - sizeY);
 		int sizeX = rand() % (_width - 5) + 3;
 		int sizeY = rand() % (_height - 5) + 3;
 
@@ -52,15 +56,69 @@ void Leaf::createRoom(){
 }
 
 void Leaf::createHall(Room* l, Room* r){
-	srand(time(NULL));
-	// Ei t;;ta veel
+	//Room 1 upper left and lower right corner
+	int R1ULCX = l->getX1();
+	int R1ULCY = l->getY1();
+	int R1LRCX = l->getX2();
+	int R1LRCY = l->getY2();
 
-	SDL_Point temp1{ getRandom(l->getX1() + 1, l->getX2() - 2), getRandom(l->getY1(), l->getY2()) };
-	SDL_Point temp2{ getRandom(r->getX1() + 1, r->getX2() - 2), getRandom(r->getY1(), r->getY2()) };
+	//Room 2 upper left and lower right corner
+
+	int R2ULCX = r->getX1();
+	int R2ULCY = r->getY1();
+	int R2LRCX = r->getX2();
+	int R2LRCY = r->getY2();
+
+	//point where the hall will begin
+	int randomX, randomY;
+
+	//location of room 1
+	bool left, up;
+
+	if (R1ULCX <= R2ULCX){
+		randomX = getRandom(R2ULCX, (R2LRCX < R1LRCX) ? R2LRCX : R1LRCX);
+		left = true;
+	}
+	else if (R1ULCX > R2ULCX){
+		randomX = getRandom(R1ULCX, (R2LRCX < R1LRCX) ? R2LRCX : R1LRCX);
+		left = false;
+	}
+
+	if (R1ULCY <= R2ULCY){
+		randomY = getRandom(R2ULCY, (R2LRCY < R1LRCY) ? R2LRCY : R1LRCY);
+		up = true;
+	}
+	else if (R1ULCY > R2ULCY){
+		randomY = getRandom(R1ULCY, (R2LRCY < R1LRCY) ? R2LRCY : R1LRCY);
+		up = false;
+	}
+
+	//DIstance between rooms
+	int w, h;
+
+	if (left){
+		w = R2ULCX - R1LRCX;
+	}
+	else{
+		w = R1ULCX - R2LRCX;
+	}
+
+	if (up){
+		h = R2ULCY - R1LRCY;
+	}
+	else{
+		h = R1ULCY - R2LRCY;
+	}
+
+	halls.push_back(new Hall(left ? R1LRCX : R2LRCX, randomY, w, 1));
+	halls.push_back(new Hall(randomX, up ? R1LRCY : R2LRCY, 1, h));
+	/**
+	SDL_Point temp1{ getRandom(l->getX1() + 1, l->getX2() - 2), getRandom(l->getY1()+1, l->getY2()-2) };
+	SDL_Point temp2{ getRandom(r->getX1() + 1, r->getX2() - 2), getRandom(r->getY1()+1, r->getY2()-2) };
 		int w = temp1.x - temp2.x;
 		int h = temp1.y - temp2.y;
 
-		if (w < 0){
+		if (w > 0){
 			if (h < 0){
 				if (rand() < 0.5){
 					halls.push_back(new Hall(temp2.x, temp1.y, abs(w), 1));
@@ -85,7 +143,7 @@ void Leaf::createHall(Room* l, Room* r){
 				halls.push_back(new Hall(temp2.x, temp2.y, abs(w), 1));
 			}
 		}
-		else if (w>0){
+		else if (w<0){
 			if (h < 0){
 				if (rand() < 0.5){
 					halls.push_back(new Hall(temp1.x, temp2.y, abs(w), 1));
@@ -117,12 +175,11 @@ void Leaf::createHall(Room* l, Room* r){
 			else if (h < 0){
 				halls.push_back(new Hall(temp1.x, temp1.y, 1, abs(h)));
 			}
-		}
+		}*/
 	
 }
 
 Room* Leaf::getRandomChildRoom(){
-	srand(time(NULL));
 	if (room != NULL){
 		return room;
 	}
@@ -167,7 +224,6 @@ std::vector<Hall*> Leaf::getHall(){
 }
 
 int Leaf::getRandom(int min, int max){
-	srand(time(NULL));
 	if (max - min == 0) return min;
 	return rand() % (max - min) + min;
 }

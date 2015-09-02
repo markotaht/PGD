@@ -1,6 +1,7 @@
 #ifndef HALL_H
 #define HALL_H
 
+#include <SDL.h>
 class Hall{
 private:
 	int x1, y1;
@@ -15,5 +16,6 @@ public:
 	int getY2();
 	int getWidth();
 	int getHeight();
+
 };
 #endif

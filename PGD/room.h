@@ -2,6 +2,7 @@
 #define ROOM_H
 
 #include <SDL.h>
+#include <vector>
 #include "floor.h"
 
 class Room{
@@ -11,13 +12,15 @@ private:
 	int y1, y2;
 
 	int Rwidth, Rheight;
+	std::vector<Room*> connections;
 
 	SDL_Point center;
 public:
 	Room(int x, int y, int width, int height);
 
 	bool intersect(const Room *other);
-
+	std::vector<Room*> getConnections();
+	void setConnections(Room* room);
 	int getX1();
 	int getY1();
 	int getX2();

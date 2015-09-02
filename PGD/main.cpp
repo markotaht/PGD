@@ -14,7 +14,7 @@ and may not be redistributed without written permission.*/
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 1000;
-const int SCREEN_HEIGHT = 600;
+const int SCREEN_HEIGHT = 800;
 
 //Starts up SDL and creates window
 bool init();
@@ -36,6 +36,7 @@ SDL_Renderer* gRenderer = NULL;
 
 bool init()
 {
+	srand(time(NULL));
 	//Initialization flag
 	bool success = true;
 
@@ -159,7 +160,7 @@ int main(int argc, char* args[])
 			//Event handler
 			SDL_Event e;
 
-			Map dungeon(25, 25);
+			Map dungeon(50, 50);
 			dungeon.generateRooms();
 
 			//While application is running

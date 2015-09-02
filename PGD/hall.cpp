@@ -8,6 +8,7 @@ y2(y+height),
 _width(width),
 _height(height)
 {}
+
 int Hall::getX1(){
 	return x1;
 }

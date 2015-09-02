@@ -6,6 +6,7 @@
 
 #include <stdlib.h>
 #include <time.h>
+#include <iostream>
 
 #include "floor.h"
 #include "tile.h"
