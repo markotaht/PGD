@@ -16,6 +16,13 @@ bool Room::intersect(const Room *other){
 		&& y1 <= other->y2 && y2 >= other->y1;
 }
 
+bool Room::checkConnection(const Room* other){
+	for (Room* r : connections){
+		if (r == other) return true;
+	}
+	return false;
+}
+
 int Room::getX1(){
 	return x1;
 }

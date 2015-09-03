@@ -63,6 +63,7 @@ void Map::generateRooms(){
 				}
 			}
 		}
+		
 		if (l->getHall().size() > 0){
 			for (Hall* h : l->getHall()){
 				halls.push_back(h);

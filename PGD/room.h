@@ -19,6 +19,7 @@ public:
 	Room(int x, int y, int width, int height);
 
 	bool intersect(const Room *other);
+	bool checkConnection(const Room* other);
 	std::vector<Room*> getConnections();
 	void setConnections(Room* room);
 	int getX1();

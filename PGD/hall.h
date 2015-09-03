@@ -2,6 +2,7 @@
 #define HALL_H
 
 #include <SDL.h>
+#include <stdlib.h>
 class Hall{
 private:
 	int x1, y1;

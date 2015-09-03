@@ -5,8 +5,8 @@ x1(x),
 y1(y),
 x2(x+width),
 y2(y+height),
-_width(width),
-_height(height)
+_width(abs(width)),
+_height(abs(height))
 {}
 
 int Hall::getX1(){
