@@ -11,16 +11,19 @@ bool Leaf::split(){
 	if (leftChild != NULL || rightChild != NULL)
 		return false;
 
-	bool splitH = rand() > 0.5;
-	//Split horisontalli if width is 25% bigger than height else random split
+	bool splitH = rand() % 10 > 5;
+	if (_width - MIN_ROOM_SIZE <= MIN_ROOM_SIZE) splitH = true;
+	if ( _height - MIN_ROOM_SIZE <= MIN_ROOM_SIZE) splitH = false;
+
+/*	//Split horisontalli if width is 25% bigger than height else random split
 	if (_width > _height && _width / _height >= 1.25) splitH = false;
 	if (_height > _width && _height / _width >= 1.25) splitH = true;
-
+	*/
 	int max = (splitH ? _height : _width) - MIN_ROOM_SIZE;
 	if (max <= MIN_ROOM_SIZE) return false;
+	
 
 	int split = rand() % (max - MIN_ROOM_SIZE) + MIN_ROOM_SIZE;
-
 	if (splitH){
 		leftChild = new Leaf(_x, _y, _width, split);
 		rightChild = new Leaf(_x, _y + split, _width, _height - split);
@@ -57,7 +60,6 @@ void Leaf::createRoom(){
 
 void Leaf::createHall(Room* l, Room* r){
 	if (l->checkConnection(r)) return;
-
 	//Room 1 upper left and lower right corner
 	int R1ULCX = l->getX1();
 	int R1ULCY = l->getY1();
@@ -73,47 +75,113 @@ void Leaf::createHall(Room* l, Room* r){
 
 	//point where the hall will begin
 	int randomX, randomY;
-
-	//location of room 1
-	bool left, up;
-
-	if (R1ULCX <= R2ULCX){
-		randomX = getRandom(R2ULCX, (R2LRCX < R1LRCX) ? R2LRCX : R1LRCX);
-		left = true;
-	}
-	else if (R1ULCX > R2ULCX){
-		randomX = getRandom(R1ULCX, (R2LRCX < R1LRCX) ? R2LRCX : R1LRCX);
-		left = false;
-	}
-
-	if (R1ULCY <= R2ULCY){
-		randomY = getRandom(R2ULCY, (R2LRCY < R1LRCY) ? R2LRCY : R1LRCY);
-		up = true;
-	}
-	else if (R1ULCY > R2ULCY){
-		randomY = getRandom(R1ULCY, (R2LRCY < R1LRCY) ? R2LRCY : R1LRCY);
-		up = false;
-	}
-
-	//DIstance between rooms
 	int w, h;
-
-	if (left){
-		w = R2ULCX - R1LRCX;
+	std::cout << R2ULCX<< std::endl;
+	if (R1LRCX <= R2ULCX){
+		if (R1LRCY < R2ULCY){
+			// Right and down
+			if (rand() % 10 < 5){
+				randomY = getRandom(R1ULCY+1, R1LRCY-1);
+				randomX = getRandom(R2ULCX+1, R2LRCX-1);
+				w = randomX - R1LRCX;
+				h = R2ULCY - randomY;
+				halls.push_back(new Hall(R1LRCX, randomY, w, 1));
+				halls.push_back(new Hall(randomX, randomY, 1, h));
+			}
+			else{ // Down and right
+				randomY = getRandom(R2ULCY+1, R2LRCY-1);
+				randomX = getRandom(R1ULCX+1, R1LRCX-1);
+				w = R2ULCX - randomX;
+				h = randomY - R1LRCY;
+				halls.push_back(new Hall(randomX, R1LRCY, 1, h));
+				halls.push_back(new Hall(randomX, randomY, w, 1));
+			}
+		}
+		else if (R1ULCY > R2LRCY){
+			//right and up
+			if (rand() % 10 < 5){
+				randomY = getRandom(R1ULCY+1, R1LRCY-1);
+				randomX = getRandom(R2ULCX+1, R2LRCX-1);
+				w = randomX - R1LRCX+1;
+				h = randomY - R2LRCY;
+				std::cout << w << std::endl;
+				halls.push_back(new Hall(R1LRCX, randomY, w, 1));
+				halls.push_back(new Hall(randomX, R2LRCY, 1, h));
+			}
+			else{ // up and right
+				randomY = getRandom(R2ULCY+1, R2LRCY-1);
+				randomX = getRandom(R1ULCX+1, R1LRCX-1);
+				w = R2ULCX - randomX;
+				h = R1ULCY - randomY;
+				halls.push_back(new Hall(randomX, randomY, 1, h));
+				halls.push_back(new Hall(randomX, randomY, w, 1));
+			}
+		}
+		else{
+			randomY = getRandom((R1ULCY > R2ULCY) ? R1ULCY+1 : R2ULCY+1, (R1LRCY < R2LRCY) ? R1LRCY-1 : R2LRCY-1);
+			w = abs(R1LRCX - R2ULCX);
+			halls.push_back(new Hall(R1LRCX, randomY, w, 1));
+		}
+	}
+	else if (R1ULCX >= R2LRCX){
+		if (R1LRCY < R2ULCY){
+			// left and down
+			if (rand() % 10 < 5){
+				randomY = getRandom(R1ULCY+1, R1LRCY-1);
+				randomX = getRandom(R2ULCX+1, R2LRCX-1);
+				w = R1ULCX - randomX;
+				h = R2ULCY - randomY;
+				halls.push_back(new Hall(randomX, randomY, w, 1));
+				halls.push_back(new Hall(randomX, randomY, 1, h));
+			}
+			else{ // down and left
+				randomX = getRandom(R1ULCX+1, R1LRCX-1);
+				randomY = getRandom(R2ULCY+1, R2LRCY-1);
+				w = randomX - R2LRCX;
+				h = randomY - R1LRCY+1;
+				halls.push_back(new Hall(randomX, R1LRCY, 1, h));
+				halls.push_back(new Hall(R2LRCX, randomY, w, 1));
+			}
+		}
+		else if (R1ULCY > R2LRCY){
+			// up and left
+			if (rand() % 10 < 5){
+				randomY = getRandom(R2ULCY+1, R2LRCY-1);
+				randomX = getRandom(R1ULCX+1, R1LRCX-1);
+				w = randomX - R2LRCX;
+				h = R1ULCY - randomY;
+				halls.push_back(new Hall(randomX, randomY, 1, h));
+				halls.push_back(new Hall(R2LRCX, randomY, w, 1));
+			}
+			else{ // left and up
+				randomY = getRandom(R1ULCY+1, R1LRCY-1);
+				randomX = getRandom(R2ULCX+1, R2LRCX-1);
+				w = R1ULCX - randomX;
+				h = randomY - R2LRCY;
+				halls.push_back(new Hall(randomX, randomY, w, 1));
+				halls.push_back(new Hall(randomX, R2LRCY, 1, h));
+			}
+		}
+		else{
+			randomY = getRandom((R1ULCY < R2ULCY) ? R1ULCY+1 : R2ULCY+1, (R1LRCY < R2LRCY) ? R1LRCY-1 : R2LRCY-1);
+			w = R1ULCX - R2LRCX;
+			halls.push_back(new Hall(R2LRCX, randomY, w, 1));
+		}
 	}
 	else{
-		w = R1ULCX - R2LRCX;
+		if (R1LRCY < R2ULCY){
+			randomX = getRandom((R1ULCX > R2ULCX) ? R1ULCX+1 : R2ULCX+1, (R1LRCX < R2LRCX) ? R1LRCX-1 : R2LRCX-1);
+			h = R2ULCY - R1LRCY;
+			halls.push_back(new Hall(randomX, R1LRCY, 1, h));
+		}
+		else if (R1ULCY > R2LRCY){
+			randomX = getRandom((R1ULCX > R2ULCX) ? R1ULCX+1 : R2ULCX+1, (R1LRCX < R2LRCX) ? R1LRCX-1 : R2LRCX-1);
+			h = R1ULCY - R2LRCY;
+			halls.push_back(new Hall(randomX, R2LRCY, 1, h));
+		}
 	}
 
-	if (up){
-		h = R2ULCY - R1LRCY;
-	}
-	else{
-		h = R1ULCY - R2LRCY;
-	}
-
-	halls.push_back(new Hall(left ? R1LRCX : R2LRCX, randomY, w, 1));
-	halls.push_back(new Hall(randomX, up ? R1LRCY : R2LRCY, 1, h));
+	
 	/**
 	SDL_Point temp1{ getRandom(l->getX1() + 1, l->getX2() - 2), getRandom(l->getY1()+1, l->getY2()-2) };
 	SDL_Point temp2{ getRandom(r->getX1() + 1, r->getX2() - 2), getRandom(r->getY1()+1, r->getY2()-2) };
@@ -196,7 +264,7 @@ Room* Leaf::getRandomChildRoom(){
 		}
 		else if (rroom == NULL) return lroom;
 		else if (lroom == NULL) return rroom;
-		else if (rand() > 0.5) return lroom;
+		else if (rand() % 10 > 5) return lroom;
 		else return rroom;
 	}
 }

@@ -11,6 +11,8 @@
 
 #define MIN_ROOM_SIZE 6
 #define MAX_ROOM_SIZE 25
+
+enum Location{UP, MID, DOWN, LEFT, OVER, RIGHT};
 class Leaf{
 private:
 
