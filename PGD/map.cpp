@@ -21,7 +21,7 @@ void Map::generateRooms(){
 	std::vector<Leaf*> leaves;
 	Leaf root(0, 0, Mwidth, Mheight);
 	leaves.push_back(&root);
-	/*std::vector<Leaf*> temp2;
+	std::vector<Leaf*> temp2;
 	temp2.push_back(&root);
 	bool split = true;
 	while (split){
@@ -43,10 +43,10 @@ void Map::generateRooms(){
 			leaves.push_back(l);
 			temp2.push_back(l);
 		}
-	}*/
-	//root.createRoom();
+	}
+	root.createRoom();
 	//root.createHall(root.getLeft()->getRandomChildRoom(), root.getRight()->getRandomChildRoom());
-	Room * r = new Room(1, 1, 3, 3);
+	/*Room * r = new Room(1, 1, 3, 3);
 	Room * l = new Room(6, 6, 3, 3);
 	rooms.push_back(r);
 	rooms.push_back(l);
@@ -107,9 +107,9 @@ void Map::generateRooms(){
 			}
 		}
 	}
-
+	*/
 	for (Leaf* l : leaves){
-	/*	if (l->getRoom() != NULL){
+		if (l->getRoom() != NULL){
 			int red = rand() % 255;
 			int green = rand() % 255;
 			int blue = rand() % 255;
@@ -125,7 +125,7 @@ void Map::generateRooms(){
 				}
 			}
 		}
-		*/
+		
 		if (l->getHall().size() > 0){
 			for (Hall* h : l->getHall()){
 				halls.push_back(h);
