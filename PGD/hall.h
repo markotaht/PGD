@@ -17,6 +17,7 @@ public:
 	int getY2();
 	int getWidth();
 	int getHeight();
+	bool hallIntersection(Hall* const other);
 
 };
 #endif

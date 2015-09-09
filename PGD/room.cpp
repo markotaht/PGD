@@ -19,6 +19,7 @@ bool Room::intersect(const Room *other){
 bool Room::checkConnection(const Room* other){
 	for (Room* r : connections){
 		if (r == other) return true;
+		//if (r->checkConnection(other)) return true; 
 	}
 	return false;
 }

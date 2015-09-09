@@ -60,6 +60,8 @@ void Leaf::createRoom(){
 
 void Leaf::createHall(Room* l, Room* r){
 	if (l->checkConnection(r)) return;
+	l->setConnections(r);
+	r->setConnections(l);
 	//Room 1 upper left and lower right corner
 	int R1ULCX = l->getX1();
 	int R1ULCY = l->getY1();

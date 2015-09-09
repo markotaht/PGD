@@ -29,7 +29,7 @@ void Map::generateRooms(){
 		std::vector<Leaf*> temp;
 		for (Leaf* l : temp2){
 			if (l->getLeft() == NULL && l->getRight() == NULL){
-				if (l->getWidth() > MAX_ROOM_SIZE || l->getHeight() > MAX_ROOM_SIZE || rand() % 10> 5){
+				if (l->getWidth() > MAX_ROOM_SIZE || l->getHeight() > MAX_ROOM_SIZE || rand() % 10 > 5){
 					if (l->split()){
 						temp.push_back(l->getLeft());
 						temp.push_back(l->getRight());
@@ -101,11 +101,11 @@ void Map::generateRooms(){
 	root.createHall(p, m);
 
 	for (Room* l : rooms){
-		for (int x = l->getX1(); x < l->getX2(); x++){
-			for (int y = l->getY1(); y < l->getY2(); y++){
-				tiles[x + y*Mwidth] = new Floor(x * 15, y * 15);
-			}
-		}
+	for (int x = l->getX1(); x < l->getX2(); x++){
+	for (int y = l->getY1(); y < l->getY2(); y++){
+	tiles[x + y*Mwidth] = new Floor(x * 15, y * 15);
+	}
+	}
 	}
 	*/
 	for (Leaf* l : leaves){
@@ -125,23 +125,133 @@ void Map::generateRooms(){
 				}
 			}
 		}
-		
+	//}
+		//	createHalls();
 		if (l->getHall().size() > 0){
 			for (Hall* h : l->getHall()){
+				//for (Hall* h: halls){
 				halls.push_back(h);
-				int red = rand() % 255;
+			/*	int red = rand() % 255;
 				int green = rand() % 255;
 				int blue = rand() % 255;
-				for (int x = h->getX1(); x < h->getX2(); x++){
-					for (int y = h->getY1(); y < h->getY2(); y++){
+				for (int x = h->getX1(); x <= h->getX2(); x++){
+					for (int y = h->getY1(); y <= h->getY2(); y++){
 						tiles[x + y * Mwidth] = new Floor(x * 15, y * 15);
 						((Floor*)tiles[x + y*Mwidth])->r = red;
 						((Floor*)tiles[x + y*Mwidth])->g = green;
 						((Floor*)tiles[x + y*Mwidth])->b = blue;
 
 					}
+				}*/
+			}
+		}
+	}
+
+
+	for (std::vector<Hall*>::iterator it = halls.begin(); it != halls.end();){
+		for (std::vector<Hall*>::iterator it2 = halls.begin(); it2 != halls.end();){
+			bool erase = false;
+			if (it != it2){
+				if ((*it)->getHeight() != 1 && (*it2)->getHeight() != 1){
+					if ((*it)->getX1() + 1 == (*it2)->getX1() || (*it)->getX1() - 1 == (*it2)->getX1()){
+						it2 = halls.erase(it2);
+						erase = true;
+					}
+				}
+				if ((*it)->getWidth() != 1 || (*it2)->getWidth() != 1){
+					if ((*it)->getY1() + 1 == (*it2)->getY1() || (*it)->getY1() - 1 == (*it2)->getY1()){
+						it2 = halls.erase(it2);
+						erase = true;
+					}
+					
+				}
+			}
+			if(!erase){
+				++it2;
+			}
+		}
+		++it;
+	}
+
+
+	for (Hall* h : halls){
+		int red = rand() % 255;
+		int green = rand() % 255;
+		int blue = rand() % 255;
+		for (int x = h->getX1(); x <= h->getX2(); x++){
+			for (int y = h->getY1(); y <= h->getY2(); y++){
+				tiles[x + y * Mwidth] = new Floor(x * 15, y * 15);
+				((Floor*)tiles[x + y*Mwidth])->r = red;
+				((Floor*)tiles[x + y*Mwidth])->g = green;
+				((Floor*)tiles[x + y*Mwidth])->b = blue;
+
+			}
+		}
+	}
+}
+
+
+void Map::createHalls(){
+	Leaf* root = new Leaf(0,0,0,0);
+	for (Room* r : rooms){
+		Room * up = NULL;
+		Room * down = NULL;
+		Room * left = NULL;
+		Room * right = NULL;
+		int minup = INT_MAX, mindown = INT_MAX, minleft = INT_MAX, minright = INT_MAX;
+		for (Room* l : rooms){
+			if (r != l){
+				if (!(r->checkConnection(l))){
+					if (r->getX1() < l->getX1()){
+						if (l->getX1() - r->getX1() < minright){
+							minright = l->getX1() - r->getX1();
+							right = l;
+						}
+					}
+					
+					if (l->getX1() < r->getX1()){
+						if (r->getX1() - l->getX1() < minleft){
+							minleft = r->getX1() - l->getX1();
+							left = l;
+						}
+					}
+
+					if (r->getY1() < l->getY1()){
+						if (l->getY1() - r->getY1() < mindown){
+							mindown = l->getY1() - r->getY1();
+							down = l;
+						}
+					}
+
+					if (r->getY1() > l->getY1()){
+						if (r->getY1() - l->getY1() < minup){
+							minup = r->getY1() - l->getY1();
+							up = l;
+						}
+					}
 				}
 			}
 		}
+		if (rand() % 10 > 5 && (up != NULL || down != NULL)){
+			if (rand() % 10 > 5 && up != NULL){
+				root->createHall(r, up);
+			}
+			else{
+				if (down != NULL)
+				root->createHall(r, down);
+			}
+		}
+		else{
+			if (rand() % 10 > 5 && left != NULL){
+				root->createHall(r, left);
+			}
+			else{
+				if (right != NULL)
+				root->createHall(r, right);
+			}
+		}
+	}
+	for (Hall* h : root->getHall()){
+		halls.push_back(h);
 	}
 }

@@ -25,5 +25,6 @@ public:
 	Map(int width, int height);
 	void generateRooms();
 	void render(SDL_Renderer* renderer);
+	void createHalls();
 };
 #endif
