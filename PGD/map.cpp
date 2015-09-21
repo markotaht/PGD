@@ -6,7 +6,13 @@ Mheight(height)
 {
 	for (int y = 0; y < height; y++){
 		for (int x = 0; x < width; x++){
-			tiles.push_back(new Wall(15 * x, 15*y));
+			tiles.push_back(new Wall(TILE_SIZE * x, TILE_SIZE*y));
+			if (rand() % 100 < chasetostartAlive){
+				cells.push_back(true); 
+			}
+			else{
+				cells.push_back(false);
+			}
 		}
 	}
 }
@@ -15,6 +21,59 @@ void Map::render(SDL_Renderer* renderer){
 	for (std::vector<Tile*>::iterator it = tiles.begin(); it != tiles.end(); it++){
 		(*it)->render(renderer);
 	}
+}
+
+void Map::generateMap(){
+	for (int i = 0; i < 20; i++){
+		cells = doGenerationStep(cells);
+	}
+	for (int i = 0; i < cells.size(); i++){
+		if(cells[i]) tiles[i] = new Floor(tiles[i]->getX(), tiles[i]->getY());
+	}
+}
+
+std::vector<bool> Map::doGenerationStep(std::vector<bool> cells){
+	std::vector<bool> newcells(cells);
+	for (int x = 0; x < Mwidth; x++){
+		for (int y = 0; y < Mheight; y++){
+			int neigbours = countNeigbours(cells, x, y);
+			if (cells[x + y*Mwidth]){
+				if (neigbours < deathlimit){
+					newcells[x + y*Mwidth] = false;
+				}
+				else{
+					newcells[x + y*Mwidth] = true;
+				}
+			}
+			else{
+				if (neigbours > birthlimit){ 
+					newcells[x + y*Mwidth] = true; 
+				}
+				else{ 
+					newcells[x + y*Mwidth] = false; 
+				}
+			}
+		}
+	}
+	return newcells;
+}
+
+int Map::countNeigbours(std::vector<bool> cells, int x, int y){
+	int count = 0;
+	for (int i = -1; i < 2; i++){
+		for (int j = -1; j < 2; j++){
+			int n_x = x + i;
+			int n_y = y + j;
+			if (i == 0 && j == 0){}
+			else if (n_x < 0 || n_y < 0 || n_x >= Mwidth || n_y >= Mheight){ 
+				count++; 
+			}
+			else if (cells[n_x + n_y*Mwidth]){
+				count++;
+			}
+		}
+	}
+	return count;
 }
 
 void Map::generateRooms(){
@@ -117,7 +176,7 @@ void Map::generateRooms(){
 			rooms.push_back(room);
 			for (int x = room->getX1(); x < room->getX2(); x++){
 				for (int y = room->getY1(); y < room->getY2(); y++){
-					tiles[x + y*Mwidth] = new Floor(x * 15, y * 15);
+					tiles[x + y*Mwidth] = new Floor(TILE_SIZE * 15, TILE_SIZE * 15);
 					((Floor*)tiles[x + y*Mwidth])->r = red;
 					((Floor*)tiles[x + y*Mwidth])->g = green;
 					((Floor*)tiles[x + y*Mwidth])->b = blue;
@@ -180,7 +239,7 @@ void Map::generateRooms(){
 		int blue = rand() % 255;
 		for (int x = h->getX1(); x <= h->getX2(); x++){
 			for (int y = h->getY1(); y <= h->getY2(); y++){
-				tiles[x + y * Mwidth] = new Floor(x * 15, y * 15);
+				tiles[x + y * Mwidth] = new Floor(TILE_SIZE * 15, TILE_SIZE * 15);
 				((Floor*)tiles[x + y*Mwidth])->r = red;
 				((Floor*)tiles[x + y*Mwidth])->g = green;
 				((Floor*)tiles[x + y*Mwidth])->b = blue;

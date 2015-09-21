@@ -160,8 +160,9 @@ int main(int argc, char* args[])
 			//Event handler
 			SDL_Event e;
 
-			Map dungeon(50, 50);
-			dungeon.generateRooms();
+			Map dungeon(150, 150);
+			//dungeon.generateRooms();
+			dungeon.generateMap();
 
 			//While application is running
 			while (!quit)
